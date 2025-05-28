@@ -1,8 +1,0 @@
-__title__ = "easeapi"
-__description__ = "The official Python client for the Ventura EaseApi"
-__url__ = "https://www.venturasecurities.com/easeapi/"
-__download_url__ = "https://github.com/venturasecurities-oss/EaseApi-python"
-__version__ = "1.0.0"
-__author__ = "Ventura Securities Ltd."
-__author_email__ = "ajay.adkar@venturasecurities.com"
-__license__ = "MIT"

@@ -1,57 +1,106 @@
-# EaseAPI 1.0.0 Python client
+# 🚀 EaseAPI Python SDK
 
-The official Python client for communicating with [EaseAPI](https://www.venturasecurities.com/easeapi/).
+[![PyPI version](https://badge.fury.io/py/ventura-easeapi.svg)](https://badge.fury.io/py/ventura-easeapi)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-The EaseAPI provides a comprehensive set of APIs that expose many capabilities required to build a complete investment and trading platform. Execute orders in real-time, manage user portfolios, and more, with the simple HTTP API collection.
+> The official Python client for communicating with [EaseAPI](https://www.venturasecurities.com/easeapi/) - Your gateway to complete investment and trading solutions.
 
-## Documentation
+## ✨ Features
 
-- [EaseAPI - HTTP API documentation](https://easeapi.venturasecurities.com/docs)
+- 🔐 Secure authentication flow
+- 📊 Real-time order execution
+- 💼 Portfolio management
+- 📈 Market data access
+- 🔄 Order modification and cancellation
+- 📱 User profile management
 
-## Run Sample Code
+## 📦 Installation
 
-### Step 1 : install library in edit mode
-
+> 🔜 Coming Soon! The EaseAPI SDK will be available on PyPI shortly.
+> 
+> Once published, you'll be able to install it using:
 ```bash
-    pip install -e .
+pip install ventura-easeapi
 ```
 
-### Step 2 : run example
+## 🚀 Quick Start
 
-```bash
-    python ./example/run_apis.py
-```
+1. **Register for API Keys**
+   - Visit [EaseAPI Portal](https://easeapi.venturasecurities.com/portal)
+   - Create an account and obtain your `app_key` and `secret_key`
 
-## API usage
+2. **Initialize the SDK**
 
 ```python
-    """
-    Initialize EaseApiGateway with your app_key.
-    This app_key and secret_key can be obtained by registering at https://easeapi.venturasecurities.com/portal
-    """
-    easeapi = EaseApiGateway(
-        app_key="YOUR_APP_KEY", disable_ssl=False, debug=False
-    )
+from easeapi import EaseApiGateway
 
-    example_api = ExampleApi()
-
-    # Step 1 :  call this SSO URL in browser and complete the SSO flow
-    example_api.sso_url(easeapi)
-
-    # Step 2 :  generate 'auth_token' from request_token received from SSO flow from step 1
-    #           this request token is generated on successful login; valid for 10 minutes.
-    #           you can find the 'secret_key' by login in your EaseAPI Portal at https://easeapi.venturasecurities.com/portal
-    example_api.auth_token(easeapi, request_token="REQUEST_TOKEN", secret_key="YOUR_SECRET_KEY")
-
-    # Step 3 :  set client_id, auth_token, refresh_token received in step 2 after successful login.
-    easeapi.set_client_id("YOUR_CLIENT_ID")
-    easeapi.set_auth_token("GENERATED_AUTH_TOKEN")
-    easeapi.set_refresh_token("GENERATED_REFRESH_TOKEN")
-
-    example_api.place_delivery_order(easeapi)
-    example_api.modify_order(easeapi)
-    example_api.cancel_order(easeapi)
-
+easeapi = EaseApiGateway(
+    app_key="YOUR_APP_KEY",
+    disable_ssl=False,
+    debug=False
+)
 ```
 
-For more details, take a look at **example.py** and **run_apis.py** in the example directory.
+## 🔑 Authentication Flow
+
+```python
+# Step 1: Generate SSO URL
+sso_url = easeapi.get_sso_url(state_variable="STATE_VARIABLE")
+print(f"Open this URL in browser: {sso_url}")
+
+# Step 2: Generate auth token
+client_id, auth_token, refresh_token = easeapi.generate_auth_token(
+    request_token="YOUR_REQUEST_TOKEN",
+    secret_key="YOUR_SECRET_KEY"
+)
+
+# Step 3: Set credentials
+easeapi.set_client_id(client_id=client_id)
+easeapi.set_auth_token(auth_token=auth_token)
+easeapi.set_refresh_token(refresh_token=refresh_token)
+```
+
+## 💡 Usage Examples
+
+### 👤 Get User Profile
+```python
+user_profile = easeapi.get_user_profile()
+print(f"User Profile Data:\n {user_profile}")
+```
+
+### 📈 Place Delivery Order
+```python
+response = easeapi.place_delivery_order({
+    "instrument_id": 2885,
+    "exchange": "NSE",
+    "segment": "E",
+    "transaction_type": "B",
+    "order_type": "MKT",
+    "quantity": 1,
+    "price": 1224.0,
+    "product": "C",
+    "validity": "DAY"
+})
+```
+
+## 📚 Documentation
+
+For detailed API documentation and more examples:
+- [EaseAPI Documentation](https://easeapi.venturasecurities.com/docs)
+- [Sample Code](run_apis.py)
+
+## 🧪 Running Examples
+
+```bash
+python run_apis.py
+```
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+⭐️ If you find this SDK helpful, please consider giving it a star on GitHub!
+
+_Built with ❤️ by Engineering at [Ventura Securities Ltd.](https://www.ventura1.com)_
