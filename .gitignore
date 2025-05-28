@@ -1,0 +1,18 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+.eggs/
+.conda/
+.idea/
+**/__pycache__/
+/easeapi.egg-info/
+
+
+# Ignore other files or directories
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.swo
+.DS_Store
+.env
