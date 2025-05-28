@@ -11,6 +11,7 @@ from constants import (
     VALIDITY_DAY,
     ORDER_TYPE_LIMIT,
     OFF_MKT_FLAG_ACTIVE,
+    PRODUCT_MARGIN
 )
 
 
@@ -159,26 +160,6 @@ class ExampleApi:
         result = easeapi.place_intraday_regular_order(payload)
         print(f"Intraday regular order response: {result}")
 
-    def place_intraday_cover_order(self, easeapi):
-        print("Placing intraday cover order")
-        payload = {
-            "transaction_type": "B",
-            "exchange": EXCHANGE_NSE,
-            "segment": SEGMENT_EQUITY,
-            "product": PRODUCT_INTRADAY,
-            "instrument_id": 7406,
-            "quantity": 1,
-            "price": 0.0,
-            "validity": VALIDITY_DAY,
-            "order_type": ORDER_TYPE_MARKET,
-            "disclosed_quantity": 0,
-            "trigger_price": 0.0,
-            "off_market_flag": OFF_MKT_FLAG_ACTIVE,
-            "remarks": "",
-        }
-        result = easeapi.place_intraday_cover_order(payload)
-        print(f"Intraday cover order response: {result}")
-
     def place_intraday_derivative_regular_order(self, easeapi):
         print("Placing intraday derivative regular order")
         payload = {
@@ -205,7 +186,7 @@ class ExampleApi:
             "transaction_type": "B",
             "exchange": EXCHANGE_NSE,
             "segment": SEGMENT_DERIVATIVE,
-            "product": PRODUCT_INTRADAY,
+            "product": PRODUCT_MARGIN,
             "instrument_id": 7406,
             "quantity": 1,
             "price": 0.0,
@@ -221,7 +202,7 @@ class ExampleApi:
 
     def cancel_order(self, easeapi):
         print("Canceling order")
-        payload = {"order_no": "1121250107102"}
+        payload = {"order_no": "2151250528107"}
         result = easeapi.cancel_order(payload)
         print(f"Cancel order response: {result}")
 

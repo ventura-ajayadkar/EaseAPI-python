@@ -31,13 +31,10 @@ class EaseApiGateway:
         "get_user_profile": f"{_default_root_uri}/user/v1/profile",
         "logout": f"{_default_root_uri}/user/v1/logout",
         "get_order_book": f"{_default_root_uri}/trade/v1/orders",
-        "order_history": f"{_default_root_uri}/trade/v1/order_history",
         "place_delivery_order": f"{_default_root_uri}/trade/v1/delivery",
         "place_intraday_regular_order": f"{_default_root_uri}/trade/v1/intraday/regular",
-        "place_intraday_cover_order": f"{_default_root_uri}/trade/v1/intraday/cover",
         "place_delivery_derivative_order": f"{_default_root_uri}/trade/v1/delivery",
         "place_intraday_derivative_regular_order": f"{_default_root_uri}/trade/v1/intraday/regular",
-        "place_intraday_derivative_cover_order": f"{_default_root_uri}/trade/v1/intraday/cover",
         "modify_order": f"{_default_root_uri}/trade/v1/modify",
         "cancel_order": f"{_default_root_uri}/trade/v1/cancel",
         "get_tradebook": f"{_default_root_uri}/trade/v1/trades",
@@ -128,19 +125,10 @@ class EaseApiGateway:
     def get_orderbook(self):
         return self._get("get_order_book", is_json=False)
 
-    def get_order_history(self, order_id):
-        payload = {
-            "order_id": order_id,
-        }
-        return self._post("order_history", params=payload, is_json=True)
-
     def place_delivery_order(self, payload):
         return self._post("place_delivery_order", params=payload, is_json=True)
 
     def place_intraday_regular_order(self, payload):
-        return self._post("place_intraday_regular_order", params=payload, is_json=True)
-
-    def place_intraday_cover_order(self, payload):
         return self._post("place_intraday_regular_order", params=payload, is_json=True)
 
     def place_delivery_derivative_order(self, payload):
