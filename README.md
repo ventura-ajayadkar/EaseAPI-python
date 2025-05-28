@@ -51,7 +51,6 @@ The EaseAPI provides a comprehensive set of APIs that expose many capabilities r
     example_api.place_delivery_order(easeapi)
     example_api.modify_order(easeapi)
     example_api.cancel_order(easeapi)
-    example_api.order_history(easeapi)
 
 ```
 
