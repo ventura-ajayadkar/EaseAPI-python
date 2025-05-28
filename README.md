@@ -1,6 +1,6 @@
 # EaseAPI 1.0.0 Python client
 
-The official Python client for communicating with [EaseAPI](https://easeapi.venturasecurities.com).
+The official Python client for communicating with [EaseAPI](https://www.venturasecurities.com/easeapi/).
 
 The EaseAPI provides a comprehensive set of APIs that expose many capabilities required to build a complete investment and trading platform. Execute orders in real-time, manage user portfolios, and more, with the simple HTTP API collection.
 
