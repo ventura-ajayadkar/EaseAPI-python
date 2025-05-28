@@ -2,7 +2,7 @@ import csv
 import logging
 from datetime import datetime
 from urllib.parse import urljoin
-
+import json
 import requests
 from six import StringIO, PY2
 import hashlib
@@ -29,17 +29,15 @@ class EaseApiGateway:
         "get_instruments": f"{_default_root_uri}/instrument/v1/instruments",
         "get_fund_details": f"{_default_root_uri}/user/v1/fund_details",
         "get_user_profile": f"{_default_root_uri}/user/v1/profile",
-        "logout": f"{_default_root_uri}/user/v1/logout",
-        "get_order_book": f"{_default_root_uri}/trade/v1/orders",
         "place_delivery_order": f"{_default_root_uri}/trade/v1/delivery",
-        "place_intraday_regular_order": f"{_default_root_uri}/trade/v1/intraday/regular",
-        "place_delivery_derivative_order": f"{_default_root_uri}/trade/v1/delivery",
-        "place_intraday_derivative_regular_order": f"{_default_root_uri}/trade/v1/intraday/regular",
+        "place_intraday_order": f"{_default_root_uri}/trade/v1/intraday/regular",
         "modify_order": f"{_default_root_uri}/trade/v1/modify",
         "cancel_order": f"{_default_root_uri}/trade/v1/cancel",
+        "get_orderbook": f"{_default_root_uri}/trade/v1/orders",
         "get_tradebook": f"{_default_root_uri}/trade/v1/trades",
         "get_holdings": f"{_default_root_uri}/portfolio/v1/holdings",
         "get_positions": f"{_default_root_uri}/portfolio/v1/positions",
+        "logout": f"{_default_root_uri}/user/v1/logout",
     }
 
     def __init__(
@@ -109,60 +107,49 @@ class EaseApiGateway:
             "data": hash_hex,
         }
         response = self._post("generate_auth_token", params=payload, is_json=True)
+        client_id = response.get("client_id")
         auth_token = response.get("auth_token")
         refresh_token = response.get("refresh_token")
-        return auth_token, refresh_token
+        return client_id, auth_token, refresh_token
 
     def get_instruments(self):
         return self._parse_instruments(self._get("get_instruments"))
 
     def get_user_profile(self):
-        return self._get("get_user_profile")
+        return json.dumps(self._get("get_user_profile"), indent=2)
 
     def get_fund_details(self):
-        return self._get("get_fund_details")
-
-    def get_orderbook(self):
-        return self._get("get_order_book", is_json=False)
+        return json.dumps(self._get("get_fund_details"), indent=2)
 
     def place_delivery_order(self, payload):
-        return self._post("place_delivery_order", params=payload, is_json=True)
+        return json.dumps(self._post("place_delivery_order", params=payload, is_json=True), indent=2)
 
-    def place_intraday_regular_order(self, payload):
-        return self._post("place_intraday_regular_order", params=payload, is_json=True)
-
-    def place_delivery_derivative_order(self, payload):
-        return self._post(
-            "place_delivery_derivative_order", params=payload, is_json=True
-        )
-
-    def place_intraday_derivative_regular_order(self, payload):
-        return self._post(
-            "place_intraday_derivative_regular_order",
-            params=payload,
-            is_json=True,
-        )
+    def place_intraday_order(self, payload):
+        return json.dumps(self._post("place_intraday_order", params=payload, is_json=True), indent=2)
 
     def modify_order(self, payload):
-        return self._post("modify_order", params=payload, is_json=True)
+        return json.dumps(self._post("modify_order", params=payload, is_json=True), indent=2)
 
     def cancel_order(self, payload):
-        return self._post("cancel_order", params=payload, is_json=True)
+        return json.dumps(self._post("cancel_order", params=payload, is_json=True), indent=2)
+
+    def get_orderbook(self):
+        return json.dumps(self._get("get_orderbook", is_json=False), indent=2)
 
     def get_tradebook(self):
-        return self._get("get_tradebook")
+        return json.dumps(self._get("get_tradebook"), indent=2)
 
     def get_holdings(self):
-        return self._get("get_holdings")
+        return json.dumps(self._get("get_holdings"), indent=2)
 
     def get_positions(self):
-        return self._get("get_positions")
+        return json.dumps(self._get("get_positions"), indent=2)
 
-    def logout(self, payload):
+    def logout(self):
         payload = {
             "refresh_token": self.refresh_token,
         }
-        return self._post("logout", params=payload, is_json=True)
+        return json.dumps(self._post("logout", params=payload, is_json=True), indent=2)
 
     def _get(self, route, url_args=None, params=None, is_json=False):
         """Alias for sending a GET request."""
@@ -284,20 +271,22 @@ class EaseApiGateway:
         # Decode unicode data
         if not PY2 and type(d) == bytes:
             d = data.decode("utf-8").strip()
+            
+            records = []
+            reader = csv.DictReader(StringIO(d))
 
-        records = []
-        reader = csv.DictReader(StringIO(d))
+            for row in reader:
+                row["exchange_token"] = int(row["exchange_token"])
+                row["last_price"] = float(row["last_price"])
+                row["tick_size"] = float(row["tick_size"])
+                row["lot_size"] = int(row["lot_size"])
 
-        for row in reader:
-            row["exchange_token"] = int(row["exchange_token"])
-            row["last_price"] = float(row["last_price"])
-            row["tick_size"] = float(row["tick_size"])
-            row["lot_size"] = int(row["lot_size"])
+                # # Parse date
+                if len(row["expiry"]) == 10:
+                    row["expiry"] = datetime.strptime(row["expiry"], "%d/%m/%Y").date()
 
-            # # Parse date
-            if len(row["expiry"]) == 10:
-                row["expiry"] = datetime.strptime(row["expiry"], "%d/%m/%Y").date()
+                records.append(row)
 
-            records.append(row)
-
-        return records
+            return records
+        else:
+            return None    
