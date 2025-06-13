@@ -20,7 +20,7 @@ def on_connect(ws, response):
     if ws.ws_url == ws.market_data_url:
 
         # Subscribe to instruments
-        ws.subscribe(["2885", "1594"], exchange=ws.EXCHANGE_NSE)  # RELIANCE, TCS on NSE
+        ws.subscribe(["2885", "11536"], exchange=ws.EXCHANGE_NSE)  # RELIANCE, TCS on NSE
         # ws.subscribe(["500570"], exchange=ws.EXCHANGE_BSE)  # TATAMOTORS on BSE
     
     # For order status connection
