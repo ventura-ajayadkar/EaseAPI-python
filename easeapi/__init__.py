@@ -27,5 +27,6 @@ from __future__ import unicode_literals, absolute_import
 
 from easeapi import exceptions
 from easeapi.easeapigateway import EaseApiGateway
+from easeapi.easeapiticker import EaseApiTicker
 
-__all__ = ["EaseApiGateway", "exceptions"]
+__all__ = ["EaseApiGateway", "EaseApiTicker", "exceptions"]
