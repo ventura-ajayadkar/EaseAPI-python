@@ -86,9 +86,9 @@ def demonstrate_easeapi_capabilities():
         )
 
         # print("\n🔐 Authenticating User using TOTP...")
-        # response = easeapi.generate_auth_token_with_otpt(
-        #     client_id="AA0605", password="1234", totp=f"{totp.now()}", secret_key="y5J58qaROG"
-        # )
+        response = easeapi.generate_auth_token_with_otpt(
+            client_id="AA0605", password="1234", totp="345261", secret_key="y5J58qaROG"
+        )
 
         # client_id = response.get("client_id", None)
         # auth_token = response.get("auth_token", None)
