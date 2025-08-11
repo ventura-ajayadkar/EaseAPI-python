@@ -53,7 +53,9 @@ setup(
         "six>=1.11.0",
         "pyOpenSSL>=17.5.0",
         "python-dateutil>=2.6.1",
-        "websocket-client>=1.8.0"
+        "websocket-client>=1.8.0",
+        "getmac>=0.9.5",
+        "pyotp>=2.9.0"
     ],
     tests_require=["pytest", "responses", "pytest-cov", "mock", "flake8"],
     test_suite="tests",

@@ -69,7 +69,7 @@ def demonstrate_easeapi_capabilities():
 
         # Initialize Trading Environment
         print("🔧 Setting up trading environment...")
-        easeapi = EaseApiGateway(app_key="CVnSgBwRhGhOCt6mjmUo", disable_ssl=True, debug=False)
+        easeapi = EaseApiGateway(app_key="CVnSgBwRhGhOCt6mjmUo", disable_ssl=False, debug=True)
 
         # Begin Trading Journey: Authentication Process
         print("\n🔑 Starting Authentication Process")
@@ -80,10 +80,19 @@ def demonstrate_easeapi_capabilities():
         print("📱 Login URL Generated:", sso_url)
 
         # # Authenticate the user and set up the trading session.
-        # print("\n🔐 Authenticating User...")
-        # client_id, auth_token, refresh_token = easeapi.generate_auth_token(
-        #     request_token="9Yz0LfHPQH", secret_key="5KzWbIZFQn"
+        print("\n🔐 Authenticating User...")
+        response = easeapi.generate_auth_token(
+            request_token="n0QFgT2nQ7", secret_key="y5J58qaROG"
+        )
+
+        # print("\n🔐 Authenticating User using TOTP...")
+        # response = easeapi.generate_auth_token_with_otpt(
+        #     client_id="AA0605", password="1234", totp=f"{totp.now()}", secret_key="y5J58qaROG"
         # )
+
+        # client_id = response.get("client_id", None)
+        # auth_token = response.get("auth_token", None)
+        # refresh_token = response.get("refresh_token", None)
 
         # # Print authentication details in a copy-friendly format
         # print("\n========== Authentication Response ==========")
