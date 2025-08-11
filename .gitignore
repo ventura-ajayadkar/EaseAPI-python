@@ -4,8 +4,9 @@
 .eggs/
 .conda/
 .idea/
+.vscode/
 **/__pycache__/
-/easeapi.egg-info/
+/ventura_easeapi.egg-info/
 
 
 # Ignore other files or directories

@@ -49,16 +49,40 @@ sso_url = easeapi.get_sso_url(state_variable="STATE_VARIABLE")
 print(f"Open this URL in browser: {sso_url}")
 
 # Step 2: Generate auth token
-client_id, auth_token, refresh_token = easeapi.generate_auth_token(
+response = easeapi.generate_auth_token(
     request_token="YOUR_REQUEST_TOKEN",
     secret_key="YOUR_SECRET_KEY"
 )
+
+client_id = response.get("client_id", None)
+auth_token = response.get("auth_token", None)
+refresh_token = response.get("refresh_token", None)
 
 # Step 3: Set credentials
 easeapi.set_client_id(client_id=client_id)
 easeapi.set_auth_token(auth_token=auth_token)
 easeapi.set_refresh_token(refresh_token=refresh_token)
 ```
+
+## 🔑 Authentication Flow Using TOTP
+
+```python
+# Step 1: Generate auth token using TOTP
+response = easeapi.generate_auth_token_with_otpt(
+    client_id="YOUR_CLIENT_ID", password="YOUR_PIN", totp="YOUR_TOTP", secret_key="YOUR_SECRET_KEY"
+)
+
+client_id = response.get("client_id", None)
+auth_token = response.get("auth_token", None)
+refresh_token = response.get("refresh_token", None)
+
+# Step 2: Set credentials
+easeapi.set_client_id(client_id=client_id)
+easeapi.set_auth_token(auth_token=auth_token)
+easeapi.set_refresh_token(refresh_token=refresh_token)
+```
+
+
 
 ## 💡 Usage Examples
 
