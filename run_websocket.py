@@ -5,7 +5,7 @@ from easeapi import EaseApiTicker
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 ticker = EaseApiTicker(
-    app_key="XlphUa8S3GPEDKt8v8op",
+    app_key="VUz2rue5R0mYqe3jx5Ic",
     client_id="AA0605",
     auth_token="eyJraWQiOiJlMDc0TUpqYnJLTXhEU3lSN2tWY25xY0x1T..."
 )
@@ -21,7 +21,7 @@ def on_connect(ws, response):
 
         # Subscribe to instruments
         ws.subscribe(["2885", "11536"], exchange=ws.EXCHANGE_NSE)  # RELIANCE, TCS on NSE
-        # ws.subscribe(["500570"], exchange=ws.EXCHANGE_BSE)  # TATAMOTORS on BSE
+        ws.subscribe(["500570"], exchange=ws.EXCHANGE_BSE)  # TATAMOTORS on BSE
     
     # For order status connection
     elif ws.ws_url == ws.order_status_url:
@@ -42,9 +42,9 @@ ticker.connect()
 # Example 2: If you want to connect to order status endpoint instead
 # Create a second instance for order status
 order_ticker = EaseApiTicker(
-    app_key="XlphUa8S3GPEDKt8v8op",
+    app_key="VUz2rue5R0mYqe3jx5Ic",
     client_id="AA0605",
-    auth_token="eyJraWQiOiJlMDc0TUpqYnJLTXhEU3lSN2tWY25xY..."
+    auth_token="eyJraWQiOiJlMDc0TUpqYnJLTXhEU3lSN2tWY2..."
 )
 
 # Set callbacks for order ticker

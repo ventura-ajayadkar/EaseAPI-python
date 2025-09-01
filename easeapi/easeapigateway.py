@@ -6,6 +6,8 @@ import json
 import requests
 from six import StringIO, PY2
 import hashlib
+from getmac import get_mac_address
+import uuid
 
 import easeapi.exceptions as ex
 
@@ -26,7 +28,9 @@ class EaseApiGateway:
     _routes = {
         "get_sso_url": f"{_default_root_uri}/auth/v1/login",
         "generate_auth_token": f"{_default_root_uri}/login/v1/authorization/token",
+        "generate_auth_token_totp": f"{_default_root_uri}/login/v1/authorization/totp",
         "get_instruments": f"{_default_root_uri}/instrument/v1/instruments",
+        "get_l1_market_quotes": f"{_default_root_uri}/instrument/v1/ohlcv",
         "get_fund_details": f"{_default_root_uri}/user/v1/fund_details",
         "get_user_profile": f"{_default_root_uri}/user/v1/profile",
         "place_delivery_order": f"{_default_root_uri}/trade/v1/delivery",
@@ -106,14 +110,30 @@ class EaseApiGateway:
             "request_token": request_token,
             "data": hash_hex,
         }
-        response = self._post("generate_auth_token", params=payload, is_json=True)
-        client_id = response.get("client_id")
-        auth_token = response.get("auth_token")
-        refresh_token = response.get("refresh_token")
-        return client_id, auth_token, refresh_token
+        return self._post("generate_auth_token", params=payload, is_json=True)
+    
+    def generate_auth_token_with_otpt(self, client_id, password, totp, secret_key):
+        concatenated_keys = self.app_key + secret_key
+        hash_object = hashlib.sha256(concatenated_keys.encode("utf-8"))
+        hash_hex = hash_object.hexdigest().lower()
+        additional_headers = {
+            "x-mac-address": self._get_mac_address(),
+            "x-client-id": f"{client_id}"
+        }
+        payload = {
+            "password": password,
+            "data": hash_hex,
+            "totp": totp
+        }
+
+        return self._post("generate_auth_token_totp", params=payload, is_json=True, headers=additional_headers)
+
 
     def get_instruments(self):
         return self._parse_instruments(self._get("get_instruments"))
+    
+    def get_l1_market_quotes(self, payload):
+        return json.dumps(self._post("get_l1_market_quotes", params=payload, is_json=True), indent=2)
 
     def get_user_profile(self):
         return json.dumps(self._get("get_user_profile"), indent=2)
@@ -158,7 +178,7 @@ class EaseApiGateway:
         )
 
     def _post(
-        self, route, url_args=None, params=None, is_json=False, query_params=None
+        self, route, url_args=None, params=None, is_json=False, query_params=None, headers=None
     ):
         """Alias for sending a POST request."""
         return self._request(
@@ -168,6 +188,7 @@ class EaseApiGateway:
             params=params,
             is_json=is_json,
             query_params=query_params,
+            headers=headers
         )
 
     def _request(
@@ -179,6 +200,7 @@ class EaseApiGateway:
         is_json=False,
         query_params=None,
         is_complete_url=True,
+        headers=None
     ):
         """Make an HTTP request."""
         if url_args:
@@ -192,15 +214,18 @@ class EaseApiGateway:
             url = uri
 
         # Custom headers
-        headers = {"User-Agent": "EaseApi-python/1.0.0", "X-EaseApi-Version": "1"}
+        default_headers = {"User-Agent": "EaseApi-python/1.0.0", "X-EaseApi-Version": "1"}
         if self.app_key:
-            headers["x-app-key"] = self.app_key
+            default_headers["x-app-key"] = self.app_key
 
         if self.client_id:
-            headers["x-client-id"] = self.client_id
+            default_headers["x-client-id"] = self.client_id
 
         if self.auth_token:
-            headers["Authorization"] = "Bearer {}".format(self.auth_token)
+            default_headers["Authorization"] = "Bearer {}".format(self.auth_token)
+
+        if headers:
+            default_headers.update(headers)
 
         if self.debug:
             log.debug(
@@ -220,7 +245,7 @@ class EaseApiGateway:
                 json=params if (method in ["POST", "PUT"] and is_json) else None,
                 data=params if (method in ["POST", "PUT"] and not is_json) else None,
                 params=query_params,
-                headers=headers,
+                headers=default_headers,
                 verify=not self.disable_ssl,
                 allow_redirects=True,
                 timeout=self.timeout,
@@ -230,8 +255,8 @@ class EaseApiGateway:
 
         if self.debug:
             log.debug(
-                "Response: {code} {content_type}".format(
-                    code=r.status_code, content_type=r.headers["content-type"]
+                "Response: {code} {content_type} {response_content}".format(
+                    code=r.status_code, content_type=r.headers["content-type"], response_content=r.text
                 )
             )
 
@@ -290,3 +315,24 @@ class EaseApiGateway:
             return records
         else:
             return None    
+        
+    def _get_mac_address(self):
+        """Get the MAC address of the system."""
+        try:
+            mac = get_mac_address()
+            if mac:
+                return mac.replace("-", ":").upper()
+        except ImportError:
+            pass
+        
+        try:
+            # fallback
+            mac_int = uuid.getnode()
+            mac_hex = '{:012x}'.format(mac_int)
+            mac_address = ':'.join(mac_hex[i:i+2] for i in range(0, 12, 2))
+            return mac_address.upper()
+        except Exception:
+            pass
+        
+        # Default fallback
+        return "00:00:00:00:00:00"
