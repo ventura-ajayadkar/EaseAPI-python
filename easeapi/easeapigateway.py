@@ -30,6 +30,7 @@ class EaseApiGateway:
         "generate_auth_token": f"{_default_root_uri}/login/v1/authorization/token",
         "generate_auth_token_totp": f"{_default_root_uri}/login/v1/authorization/totp",
         "get_instruments": f"{_default_root_uri}/instrument/v1/instruments",
+        "get_l1_market_quotes": f"{_default_root_uri}/instrument/v1/ohlcv",
         "get_fund_details": f"{_default_root_uri}/user/v1/fund_details",
         "get_user_profile": f"{_default_root_uri}/user/v1/profile",
         "place_delivery_order": f"{_default_root_uri}/trade/v1/delivery",
@@ -130,6 +131,9 @@ class EaseApiGateway:
 
     def get_instruments(self):
         return self._parse_instruments(self._get("get_instruments"))
+    
+    def get_l1_market_quotes(self, payload):
+        return json.dumps(self._post("get_l1_market_quotes", params=payload, is_json=True), indent=2)
 
     def get_user_profile(self):
         return json.dumps(self._get("get_user_profile"), indent=2)
