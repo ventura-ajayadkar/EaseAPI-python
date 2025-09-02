@@ -69,7 +69,7 @@ def demonstrate_easeapi_capabilities():
 
         # Initialize Trading Environment
         print("🔧 Setting up trading environment...")
-        easeapi = EaseApiGateway(app_key="Ox2vExSRL2TGKUYv11Ao", disable_ssl=False, debug=True)
+        easeapi = EaseApiGateway(app_key="Ox2vExSRL2TGKUYv11Ao", disable_ssl=False, debug=False)
 
         # Begin Trading Journey: Authentication Process
         print("\n🔑 Starting Authentication Process")
@@ -86,9 +86,9 @@ def demonstrate_easeapi_capabilities():
         # )
 
         # # print("\n🔐 Authenticating User using TOTP...")
-        # response = easeapi.generate_auth_token_with_otpt(
-        #     client_id="AA0605", password="1234", totp="345261", secret_key="y5J58qaROG"
-        # )
+        response = easeapi.generate_auth_token_with_otpt(
+            client_id="AA0605", password="1234", totp="345261", secret_key="y5J58qaROG"
+        )
 
         client_id = response.get("client_id", None)
         auth_token = response.get("auth_token", None)
@@ -134,9 +134,9 @@ def demonstrate_easeapi_capabilities():
         print("Available Funds:")
         print(funds)
 
-        # print("\nFetching Instruments...")
-        # instruments = easeapi.get_instruments()
-        # print(f"Total Instruments: {len(instruments)}")
+        print("\nFetching Instruments...")
+        instruments = easeapi.get_instruments()
+        print(f"Total Instruments: {len(instruments)}")
         
         ohlcv_payload = {
             "exchange":"NSE",
@@ -145,137 +145,137 @@ def demonstrate_easeapi_capabilities():
         ohlcv = easeapi.get_l1_market_quotes(ohlcv_payload)
         print(f"L1 Market Quote Response: {ohlcv}")
 
-        # demo_instruments = get_demo_instruments(instruments)
-        # print("\n🎉 Selected Instruments for Demo:")
-        # print(demo_instruments)
+        demo_instruments = get_demo_instruments(instruments)
+        print("\n🎉 Selected Instruments for Demo:")
+        print(demo_instruments)
 
-        # # Trading Operations
-        # print("\n💹 Trading Operations")
-        # print("===================")
+        # Trading Operations
+        print("\n💹 Trading Operations")
+        print("===================")
 
-        # # 1. Place Order (Cash Segment)
-        # print("\n💵💵💵 Placing Cash Order...")
-        # cash_order_payload = {
-        #     "instrument_id": int(demo_instruments[0]["Instrument ID"]) if demo_instruments and demo_instruments[0]["Instrument ID"] else 0,
-        #     "exchange": "NSE",
-        #     "segment": "E",            # E for Equity
-        #     "transaction_type": "B",
-        #     "order_type": "MKT",       # Market order
-        #     "quantity": 1,
-        #     "price": 0.0,
-        #     "trigger_price": 0.0,
-        #     "product": "C",            # C for Cash and Carry
-        #     "validity": "DAY",
-        #     "disclosed_quantity": 0,
-        #     "off_market_flag": 0,
-        # }
-        # delivery_order = easeapi.place_delivery_order(cash_order_payload)
-        # print("Delivery Order Response:")
-        # print(delivery_order)
+        # 1. Place Order (Cash Segment)
+        print("\n💵💵💵 Placing Cash Order...")
+        cash_order_payload = {
+            "instrument_id": int(demo_instruments[0]["Instrument ID"]) if demo_instruments and demo_instruments[0]["Instrument ID"] else 0,
+            "exchange": "NSE",
+            "segment": "E",            # E for Equity
+            "transaction_type": "B",
+            "order_type": "MKT",       # Market order
+            "quantity": 1,
+            "price": 0.0,
+            "trigger_price": 0.0,
+            "product": "C",            # C for Cash and Carry
+            "validity": "DAY",
+            "disclosed_quantity": 0,
+            "off_market_flag": 0,
+        }
+        delivery_order = easeapi.place_delivery_order(cash_order_payload)
+        print("Delivery Order Response:")
+        print(delivery_order)
 
-        # # 2. Place NSE FUT Order (NSE F&O Segment)
-        # print("\n💵💵💵 Placing NSE FUT Order...")
-        # fut_order_payload = {
-        #     "instrument_id": int(demo_instruments[2]["Instrument ID"]) if demo_instruments and demo_instruments[2]["Instrument ID"] else 0,
-        #     "exchange": "NSE",
-        #     "segment": "D",            # D for F&O
-        #     "transaction_type": "B",
-        #     "order_type": "MKT",
-        #     "quantity": int(demo_instruments[2]["Lot Size"]) if demo_instruments and demo_instruments[2]["Lot Size"] else 1,
-        #     "price": 0.0,
-        #     "trigger_price": 0.0,
-        #     "product": "M",            # M for Margin
-        #     "validity": "DAY",
-        #     "disclosed_quantity": 0,
-        #     "off_market_flag": 0,
-        # }
-        # nse_fut_order = easeapi.place_delivery_order(fut_order_payload)
-        # print("Delivery NSE FUT Order Response:")
-        # print(nse_fut_order)
+        # 2. Place NSE FUT Order (NSE F&O Segment)
+        print("\n💵💵💵 Placing NSE FUT Order...")
+        fut_order_payload = {
+            "instrument_id": int(demo_instruments[2]["Instrument ID"]) if demo_instruments and demo_instruments[2]["Instrument ID"] else 0,
+            "exchange": "NSE",
+            "segment": "D",            # D for F&O
+            "transaction_type": "B",
+            "order_type": "MKT",
+            "quantity": int(demo_instruments[2]["Lot Size"]) if demo_instruments and demo_instruments[2]["Lot Size"] else 1,
+            "price": 0.0,
+            "trigger_price": 0.0,
+            "product": "M",            # M for Margin
+            "validity": "DAY",
+            "disclosed_quantity": 0,
+            "off_market_flag": 0,
+        }
+        nse_fut_order = easeapi.place_delivery_order(fut_order_payload)
+        print("Delivery NSE FUT Order Response:")
+        print(nse_fut_order)
 
-        # # 3. Place NSE Call Option Order (NSE F&O Segment)
-        # print("\n💵💵💵 Placing NSE Call Option Order...")
-        # ce_order_payload = {
-        #     "instrument_id": int(demo_instruments[3]["Instrument ID"]) if demo_instruments and demo_instruments[3]["Instrument ID"] else 0,
-        #     "exchange": "NSE",
-        #     "segment": "D",
-        #     "transaction_type": "B",
-        #     "order_type": "MKT",
-        #     "quantity": int(demo_instruments[3]["Lot Size"]) if demo_instruments and demo_instruments[3]["Lot Size"] else 1,
-        #     "price": 0.0,
-        #     "trigger_price": 0.0,
-        #     "product": "M",
-        #     "validity": "DAY",
-        #     "disclosed_quantity": 0,
-        #     "off_market_flag": 0,
-        # }
-        # nse_ce_order = easeapi.place_delivery_order(ce_order_payload)
-        # print("Delivery NSE Call Option Order Response:")
-        # print(nse_ce_order)
+        # 3. Place NSE Call Option Order (NSE F&O Segment)
+        print("\n💵💵💵 Placing NSE Call Option Order...")
+        ce_order_payload = {
+            "instrument_id": int(demo_instruments[3]["Instrument ID"]) if demo_instruments and demo_instruments[3]["Instrument ID"] else 0,
+            "exchange": "NSE",
+            "segment": "D",
+            "transaction_type": "B",
+            "order_type": "MKT",
+            "quantity": int(demo_instruments[3]["Lot Size"]) if demo_instruments and demo_instruments[3]["Lot Size"] else 1,
+            "price": 0.0,
+            "trigger_price": 0.0,
+            "product": "M",
+            "validity": "DAY",
+            "disclosed_quantity": 0,
+            "off_market_flag": 0,
+        }
+        nse_ce_order = easeapi.place_delivery_order(ce_order_payload)
+        print("Delivery NSE Call Option Order Response:")
+        print(nse_ce_order)
 
-        # # 4. Place NSE Put Option Order (NSE F&O Segment)
-        # print("\n💵💵💵 Placing NSE Put Option Order...")
-        # pe_order_payload = {
-        #     "instrument_id": int(demo_instruments[4]["Instrument ID"]) if demo_instruments and demo_instruments[4]["Instrument ID"] else 0,
-        #     "exchange": "NSE",
-        #     "segment": "D",
-        #     "transaction_type": "B",
-        #     "order_type": "MKT",
-        #     "quantity": int(demo_instruments[4]["Lot Size"]) if demo_instruments and demo_instruments[4]["Lot Size"] else 1,
-        #     "price": 0.0,
-        #     "trigger_price": 0.0,
-        #     "product": "M",
-        #     "validity": "DAY",
-        #     "disclosed_quantity": 0,
-        #     "off_market_flag": 0,
-        # }
-        # nse_pe_order = easeapi.place_delivery_order(pe_order_payload)
-        # print("Delivery NSE Put Option Order Response:")
-        # print(nse_pe_order)
+        # 4. Place NSE Put Option Order (NSE F&O Segment)
+        print("\n💵💵💵 Placing NSE Put Option Order...")
+        pe_order_payload = {
+            "instrument_id": int(demo_instruments[4]["Instrument ID"]) if demo_instruments and demo_instruments[4]["Instrument ID"] else 0,
+            "exchange": "NSE",
+            "segment": "D",
+            "transaction_type": "B",
+            "order_type": "MKT",
+            "quantity": int(demo_instruments[4]["Lot Size"]) if demo_instruments and demo_instruments[4]["Lot Size"] else 1,
+            "price": 0.0,
+            "trigger_price": 0.0,
+            "product": "M",
+            "validity": "DAY",
+            "disclosed_quantity": 0,
+            "off_market_flag": 0,
+        }
+        nse_pe_order = easeapi.place_delivery_order(pe_order_payload)
+        print("Delivery NSE Put Option Order Response:")
+        print(nse_pe_order)
 
-        # # 5. Place Intraday Order (Cash Segment)
-        # print("\n💵💵💵 Placing Intraday Equity Order...")
-        # intraday_payload = {
-        #     "instrument_id": int(demo_instruments[0]["Instrument ID"]) if demo_instruments and demo_instruments[0]["Instrument ID"] else 0,
-        #     "exchange": "NSE",
-        #     "segment": "E",
-        #     "transaction_type": "B",
-        #     "order_type": "LMT",  # Limit order
-        #     "quantity": 1,
-        #     "price": float(demo_instruments[0]["Last Price"]) if demo_instruments and demo_instruments[0]["Last Price"] else 0.0,
-        #     "trigger_price": 0.0,
-        #     "product": "I",       # I for Intraday
-        #     "validity": "DAY",
-        #     "disclosed_quantity": 0,
-        #     "off_market_flag": 0,
-        # }
-        # intraday_order = easeapi.place_intraday_order(intraday_payload)
-        # print("Intraday Order Response:")
-        # print(intraday_order)
+        # 5. Place Intraday Order (Cash Segment)
+        print("\n💵💵💵 Placing Intraday Equity Order...")
+        intraday_payload = {
+            "instrument_id": int(demo_instruments[0]["Instrument ID"]) if demo_instruments and demo_instruments[0]["Instrument ID"] else 0,
+            "exchange": "NSE",
+            "segment": "E",
+            "transaction_type": "B",
+            "order_type": "LMT",  # Limit order
+            "quantity": 1,
+            "price": float(demo_instruments[0]["Last Price"]) if demo_instruments and demo_instruments[0]["Last Price"] else 0.0,
+            "trigger_price": 0.0,
+            "product": "I",       # I for Intraday
+            "validity": "DAY",
+            "disclosed_quantity": 0,
+            "off_market_flag": 0,
+        }
+        intraday_order = easeapi.place_intraday_order(intraday_payload)
+        print("Intraday Order Response:")
+        print(intraday_order)
 
         # # Modify Existing Order
-        # print("\nModifying Order...")
-        # modify_order_payload = {
-        #     "order_type": "LMT",
-        #     "quantity": 1,
-        #     "price": float(demo_instruments[0]["Last Price"]) if demo_instruments and demo_instruments[0]["Last Price"] else 0.0,
-        #     "trigger_price": 0.0,
-        #     "disc_quantity": 0,
-        #     "order_no": str(json.loads(intraday_order).get("order_no")),
-        #     "validity": "DAY"
-        # }
-        # modify_order_response = easeapi.modify_order(modify_order_payload)
-        # print("Modify Order Response:")
-        # print(modify_order_response)
+        print("\nModifying Order...")
+        modify_order_payload = {
+            "order_type": "LMT",
+            "quantity": 1,
+            "price": float(demo_instruments[0]["Last Price"]) if demo_instruments and demo_instruments[0]["Last Price"] else 0.0,
+            "trigger_price": 0.0,
+            "disc_quantity": 0,
+            "order_no": str(json.loads(intraday_order).get("order_no")),
+            "validity": "DAY"
+        }
+        modify_order_response = easeapi.modify_order(modify_order_payload)
+        print("Modify Order Response:")
+        print(modify_order_response)
 
-        # # Cancel Existing Order
-        # print("\nCancelling Order...")
-        # cancel_order_payload = {
-        #     "order_no": str(json.loads(intraday_order).get("order_no")),
-        # }
-        # cancel_order_response = easeapi.cancel_order(cancel_order_payload)
-        # print("Cancel Order Response:")
-        # print(cancel_order_response)
+        # Cancel Existing Order
+        print("\nCancelling Order...")
+        cancel_order_payload = {
+            "order_no": str(json.loads(intraday_order).get("order_no")),
+        }
+        cancel_order_response = easeapi.cancel_order(cancel_order_payload)
+        print("Cancel Order Response:")
+        print(cancel_order_response)
 
         # Portfolio Management
         print("\n📈 Portfolio Management")
@@ -302,10 +302,10 @@ def demonstrate_easeapi_capabilities():
         print(holdings)
 
         # Cleanup and Logout
-        # print("\n👋 Wrapping Up Session")
-        # print("===================")
-        # logout_response = easeapi.logout()
-        # print("✅ Successfully logged out. Thank you for using EaseAPI!")
+        print("\n👋 Wrapping Up Session")
+        print("===================")
+        logout_response = easeapi.logout()
+        print("✅ Successfully logged out. Thank you for using EaseAPI!")
 
     except Exception as error:
         print("\n❌ Oops! Something went wrong:", str(error))
