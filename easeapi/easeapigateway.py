@@ -112,7 +112,7 @@ class EaseApiGateway:
         }
         return self._post("generate_auth_token", params=payload, is_json=True)
     
-    def generate_auth_token_with_otpt(self, client_id, password, totp, secret_key):
+    def generate_auth_token_with_totp(self, client_id, password, totp, secret_key):
         concatenated_keys = self.app_key + secret_key
         hash_object = hashlib.sha256(concatenated_keys.encode("utf-8"))
         hash_hex = hash_object.hexdigest().lower()
