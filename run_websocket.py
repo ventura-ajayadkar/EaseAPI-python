@@ -22,6 +22,7 @@ def on_connect(ws, response):
         # Subscribe to instruments
         ws.subscribe(["2885", "11536"], exchange=ws.EXCHANGE_NSE)  # RELIANCE, TCS on NSE
         ws.subscribe(["500570"], exchange=ws.EXCHANGE_BSE)  # TATAMOTORS on BSE
+        ws.subscribe(["Nifty 50"], exchange=ws.EXCHANGE_INDEX)  # NIFTY 50 index
     
     # For order status connection
     elif ws.ws_url == ws.order_status_url:
